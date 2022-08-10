@@ -1,0 +1,80 @@
+---
+title: "sGPfit"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{sGPfit}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(sGPfit)
+```
+
+
+The sGP model can be sampled/fitted using three methods:
+
+- Exact Method
+
+- Exact Method with State-Space Representation
+
+- Approximation Method with BT splines
+
+## Exact Method
+
+To obtain sGP sample path with exact method, we can directly compute its covariance matrix at the locations using its covariance function `C_True`:
+
+```{r}
+locations <- seq(0.1,10, by = 0.1)
+K_true <- generate_K_true(sigma = 1, alpha = 1)
+C_True <- compute_matrix_given_cov(from = 0.1, to = 10, m = 100, K = K_true)
+```
+
+The function `gaussprocess` further simplifies the process, by only requires the covariance function `K`:
+```{r}
+samps <- gaussprocess(from = 0.1, to = 10, m = 100, K = K_true)
+plot(data = samps, xt~t, type = 'l')
+```
+
+However, since the matrix `C_True` is dense and computational cost to invert it would be $O(n^3)$, this exact method by directly inverting `C_True` is not feasible when the number of locations $n$ is too big.
+
+
+## Exact Method with State-Space Representation
+
+An alternative is to consider its state-space representation by augmenting it with its derivative. This makes the joint precision matrix $Q$ larger, but much more sparser.
+
+```{r}
+Q <- joint_prec_construct(t_vec = locations, a = 1, sd = 1)
+```
+
+
+The function `joint_prec_construct` constructs the joint precision matrix of the augmented space, and the function `sim_sGP_Var` utilizes the state-space representation to simulate the sample path with its derivatives as a VAR model:
+
+```{r}
+samps <- sim_sGP_Var(t = locations, a = 1, sd = 1)
+plot(samps[,2] ~ samps[,1], type = 'l', ylab = "f", xlab = 't')
+plot(samps[,3] ~ samps[,1], type = 'l', ylab = "f'", xlab = 't')
+```
+
+
+This method is much faster than the direct method, especially when the number of locations is large.
+
+
+
+## Approximation Method
+
+Finally, instead of the exact method, one can also consider approximated method based on the BT splines:
+
+```{r}
+samps <- sampling_from_BT(x = locations, a = 1, k = 20, region = c(0,10), n = 1)
+plot(samps[,1]~locations, ylab = "f", xlab = "t", type = 'l')
+```
+
+As $k$ gets larger, the approximation becomes slower to fit, but the approximation accuracy will increase. Such kind of method is particularly useful when one wants to consider the entire continuous process of sGP, instead of its discrete observations at some fixed locations.
