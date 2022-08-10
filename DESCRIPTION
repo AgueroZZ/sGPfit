@@ -1,5 +1,5 @@
 Package: sGPfit
-Title: Efficient Sampling and Fitting Seasonal Gaussian Process through State-Space Representation or BT Splines Approximation
+Title: Efficient Sampling and Fitting Seasonal Gaussian Process Through State-Space Representation or BT Splines Approximation
 Version: 1.0.1
 Author: Ziang Zhang
 Maintainer: Ziang Zhang <aguero.zhang@mail.utoronto.ca>
@@ -7,7 +7,6 @@ Description: To implement the seasonal Gaussian process model through either its
 Imports:
     methods,
     tsDyn,
-    stats,
     fda,
     LaplacesDemon,
     MASS,
