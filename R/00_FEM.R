@@ -11,24 +11,28 @@
 #' means more accurate inner product with longer computational time.
 #' @param boundary A logical value to denote whether to consider the boundary conditions.
 #' @return A sparse matrix as the precision matrix of the weights.
+#' @importFrom methods as
+#' @import Matrix
 #' @export
+#' @examples
+#' Compute_Q_Bt(a = 1, k = 5, region = c(0,1))
 Compute_Q_Bt <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
-  ss <- function(M) {forceSymmetric(M + t(M))}
+  ss <- function(M) {Matrix::forceSymmetric(M + t(M))}
   x <- seq(min(region),max(region),by = accuracy)
   if(boundary == TRUE){
-    B_basis <- suppressWarnings(create.bspline.basis(rangeval = c(min(region),max(region)),
+    B_basis <- suppressWarnings(fda::create.bspline.basis(rangeval = c(min(region),max(region)),
                                                      nbasis = k,
                                                      norder = 4,
                                                      dropind = c(1,2)))
   }
   else{
-    B_basis <- suppressWarnings(create.bspline.basis(rangeval = c(min(region),max(region)),
+    B_basis <- suppressWarnings(fda::create.bspline.basis(rangeval = c(min(region),max(region)),
                                                      nbasis = k,
                                                      norder = 4))
   }
-  Bmatrix <- eval.basis(x, B_basis, Lfdobj=0, returnMatrix=T)
-  B1matrix <-  eval.basis(x, B_basis, Lfdobj=1, returnMatrix=T)
-  B2matrix <-  eval.basis(x, B_basis, Lfdobj=2, returnMatrix=T)
+  Bmatrix <- fda::eval.basis(x, B_basis, Lfdobj=0, returnMatrix=TRUE)
+  B1matrix <-  fda::eval.basis(x, B_basis, Lfdobj=1, returnMatrix=TRUE)
+  B2matrix <-  fda::eval.basis(x, B_basis, Lfdobj=2, returnMatrix=TRUE)
   cos_matrix <- cos(a*x)
   sin_matrix <- sin(a*x)
   Bcos <- as(apply(Bmatrix, 2, function(x) x*cos_matrix), "dgCMatrix")
@@ -84,7 +88,7 @@ Compute_Q_Bt <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
 
   ### Compute the final precision matrix: Q
   Q <- (a^4)*G + C + (a^2)*ss(M)
-  forceSymmetric(Q)
+  Matrix::forceSymmetric(Q)
 }
 
 
@@ -93,28 +97,29 @@ Compute_Q_Bt <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
 #' This function outputs the design matrix of the BT approximation as a sparse matrix, given the number of knots,
 #' the periodicity parameter a, and the region of interest.
 #'
+#' @param x A vector of numeric values that denotes the evaluation locations.
 #' @param a A positive scalar represents the periodicity parameter.
 #' @param k A positive integer represents the number of knots used to define the BT basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
-#' @param accuracy A positive integer represents the integration size used to compute the inner product. Smaller value
-#' means more accurate inner product with longer computational time.
 #' @param boundary A logical value to denote whether to consider the boundary conditions.
 #' @return A sparse matrix as the design matrix of the weights.
 #' @export
-Compute_B_Bt <- function(x, a, k, region, boundary = T){
+#' @examples
+#' Compute_B_Bt(x = c(1,2,3), a = 1, k = 5, region = c(0,3))
+Compute_B_Bt <- function(x, a, k, region, boundary = TRUE){
   if(boundary){
-    B_basis <- suppressWarnings(create.bspline.basis(rangeval = c(min(region),max(region)),
+    B_basis <- suppressWarnings(fda::create.bspline.basis(rangeval = c(min(region),max(region)),
                                                      nbasis = k,
                                                      norder = 4,
                                                      dropind = c(1,2)))
   }
   else{
-    B_basis <- suppressWarnings(create.bspline.basis(rangeval = c(min(region),max(region)),
+    B_basis <- suppressWarnings(fda::create.bspline.basis(rangeval = c(min(region),max(region)),
                                                      nbasis = k,
                                                      norder = 4))
   }
-  Bmatrix <- eval.basis(x, B_basis, Lfdobj=0, returnMatrix=T)
+  Bmatrix <- fda::eval.basis(x, B_basis, Lfdobj=0, returnMatrix=TRUE)
   cos_matrix <- cos(a*x)
   sin_matrix <- sin(a*x)
   Bcos <- apply(Bmatrix, 2, function(x) x*cos_matrix)
@@ -133,20 +138,20 @@ Compute_B_Bt <- function(x, a, k, region, boundary = T){
 #' @param k A positive integer represents the number of knots used to define the BT basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
-#' @param accuracy A positive integer represents the integration size used to compute the inner product. Smaller value
-#' means more accurate inner product with longer computational time.
 #' @param boundary A logical value to denote whether to consider the boundary conditions.
 #' @param n The number of samples to draw.
 #' @return A matrix with each column denote a sample path f(x).
 #' @export
-sampling_from_weights <- function(x, a, k, region, boundary = T, n = 1){
+#' @examples
+#' sampling_from_BT(x = c(1,2,3), a = 1, k = 5, region = c(0,5))
+sampling_from_BT <- function(x, a, k, region, boundary = TRUE, n = 1){
   Prec <- Compute_Q_Bt(a, k, region, boundary = boundary)
   B <- Compute_B_Bt(x, a, k, region, boundary = boundary)
   if(boundary){
-    coefs_samps <- rmvnp(n = n, mu = rep(0,(2*(k-2))), Omega = as.matrix(Prec))
+    coefs_samps <- LaplacesDemon::rmvnp(n = n, mu = rep(0,(2*(k-2))), Omega = as.matrix(Prec))
   }
   else{
-    coefs_samps <- rmvnp(n = n, mu = rep(0,(2*k)), Omega = as.matrix(Prec))
+    coefs_samps <- LaplacesDemon::rmvnp(n = n, mu = rep(0,(2*k)), Omega = as.matrix(Prec))
   }
   splfd <- B %*% t(coefs_samps)
   (splfd)

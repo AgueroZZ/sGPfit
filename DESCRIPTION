@@ -1,15 +1,18 @@
 Package: sGPfit
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+Title: Efficient Sampling and Fitting Seasonal Gaussian Process through State-Space Representation or BT Splines Approximation
+Version: 1.0.1
+Author: Ziang Zhang
+Maintainer: Ziang Zhang <aguero.zhang@mail.utoronto.ca>
+Description: To implement the seasonal Gaussian process model through either its state-space representation or its finite dimensional approximation with BT splines.
+Imports:
+    methods,
+    tsDyn,
+    stats,
+    fda,
+    LaplacesDemon,
+    MASS,
+    Matrix
+License:  GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
