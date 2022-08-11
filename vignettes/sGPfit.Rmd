@@ -34,13 +34,13 @@ To obtain sGP sample path with exact method, we can directly compute its covaria
 ```{r}
 locations <- seq(0.1,10, by = 0.1)
 K_true <- generate_K_true(sigma = 1, alpha = 1)
-C_True <- compute_matrix_given_cov(from = 0.1, to = 10, m = 100, K = K_true)
+C_True <- compute_matrix_given_cov(grid = locations, K = K_true)
 ```
 
-The function `gaussprocess` further simplifies the process, by only requires the covariance function `K`:
+The function `sim_GP` further simplifies the process, by only requires the covariance function `K`:
 ```{r}
-samps <- gaussprocess(from = 0.1, to = 10, m = 100, K = K_true)
-plot(data = samps, xt~t, type = 'l')
+samps <- sim_GP(grid = locations, K = K_true)
+plot(data = samps, f~x, type = 'l', ylab = "f", xlab = "x")
 ```
 
 However, since the matrix `C_True` is dense and computational cost to invert it would be $O(n^3)$, this exact method by directly inverting `C_True` is not feasible when the number of locations $n$ is too big.
@@ -59,8 +59,8 @@ The function `joint_prec_construct` constructs the joint precision matrix of the
 
 ```{r}
 samps <- sim_sGP_Var(t = locations, a = 1, sd = 1)
-plot(samps[,2] ~ samps[,1], type = 'l', ylab = "f", xlab = 't')
-plot(samps[,3] ~ samps[,1], type = 'l', ylab = "f'", xlab = 't')
+plot(samps[,2] ~ samps[,1], type = 'l', ylab = "f", xlab = 'x')
+plot(samps[,3] ~ samps[,1], type = 'l', ylab = "f'", xlab = 'x')
 ```
 
 
@@ -74,7 +74,7 @@ Finally, instead of the exact method, one can also consider approximated method 
 
 ```{r}
 samps <- sampling_from_BT(x = locations, a = 1, k = 20, region = c(0,10), n = 1)
-plot(samps[,1]~locations, ylab = "f", xlab = "t", type = 'l')
+plot(samps[,1]~locations, ylab = "f", xlab = "x", type = 'l')
 ```
 
 As $k$ gets larger, the approximation becomes slower to fit, but the approximation accuracy will increase. Such kind of method is particularly useful when one wants to consider the entire continuous process of sGP, instead of its discrete observations at some fixed locations.

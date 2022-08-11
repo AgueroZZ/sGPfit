@@ -4,19 +4,15 @@
 \alias{compute_matrix_given_cov}
 \title{Compute covariance matrix given covariance function.}
 \usage{
-compute_matrix_given_cov(from, to, m, K)
+compute_matrix_given_cov(grid, K)
 }
 \arguments{
-\item{from}{numeric value for the left limit of the interval of interest}
-
-\item{to}{numeric value for the right limit of the interval of interest}
-
-\item{m}{An integer value of number of points to simulate.}
+\item{grid}{A vector of locations to be provided as the grid.}
 
 \item{K}{A covariance function of two arguments that is PD.}
 }
 \value{
-A m by m covariance matrix
+A m by m covariance matrix, with m being length of grid.
 }
 \description{
 This function computes the covariance matrix of the GP given its covariance function,
@@ -24,5 +20,5 @@ over a specified region.
 }
 \examples{
 fun <- generate_K_true(1,1)
-compute_matrix_given_cov(from = 0, to = 1, m = 5, K = fun)
+compute_matrix_given_cov(grid = c(0.1,0.2,0.3,0.4), K = fun)
 }

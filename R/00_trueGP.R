@@ -1,34 +1,3 @@
-#' Simulates a Gaussian process with a given covariance function.
-#'
-#' This function simulates a Gaussian process over a fine-grid,
-#'  provided with a given covariance function.
-#'
-#' @param from numeric value for the left limit of the interval of interest
-#' @param to numeric value for the right limit of the interval of interest
-#' @param start numerical of the starting value of the GP, default to zero.
-#' @param K A covariance function of two arguments that is PD. Default being Brownian motion.
-#' @param m An integer value of number of points to simulate.
-#' @return A dataframe with time index and value of the sample path.
-#' @export
-#' @examples
-#' gaussprocess(from = 0, to = 1, K = function(s, t) {min(s, t)}, start = 0, m = 10)
-gaussprocess <- function(from = 0, to = 1, K = function(s, t) {min(s, t)},
-                         start = 0, m = 1000) {
-  t <- seq(from = from, to = to, length.out = m)
-  Sigma <- sapply(t, function(s1) {
-    sapply(t, function(s2) {
-      K(s1, s2)
-    })
-  })
-
-  path <- MASS::mvrnorm(mu = rep(0, times = m), Sigma = Sigma)
-  path <- path - path[1] + start
-
-  return(data.frame("t" = t, "xt" = path))
-}
-
-
-
 #' Generate the true covariance function of the sGP, given its periodicity parameter
 #' and its SD parameter.
 #'
@@ -37,7 +6,7 @@ gaussprocess <- function(from = 0, to = 1, K = function(s, t) {min(s, t)},
 #'
 #' @param sigma The value of the SD parameter.
 #' @param alpha The value of the periodicity parameter.
-#' @return A PD covariance function that takes two arguments.
+#' @return A Positive Definite covariance function that takes two arguments.
 #' @export
 #' @examples
 #' fun <- generate_K_true(1,1)
@@ -56,21 +25,39 @@ generate_K_true <- function(sigma,alpha){
 #' This function computes the covariance matrix of the GP given its covariance function,
 #' over a specified region.
 #'
-#' @param from numeric value for the left limit of the interval of interest
-#' @param to numeric value for the right limit of the interval of interest
-#' @param m An integer value of number of points to simulate.
+#' @param grid A vector of locations to be provided as the grid.
 #' @param K A covariance function of two arguments that is PD.
-#' @return A m by m covariance matrix
+#' @return A m by m covariance matrix, with m being length of grid.
 #' @export
 #' @examples
 #' fun <- generate_K_true(1,1)
-#' compute_matrix_given_cov(from = 0, to = 1, m = 5, K = fun)
-compute_matrix_given_cov <- function(from, to, m, K){
-  t <- seq(from = from, to = to, length.out = m)
-  Sigma <- sapply(t, function(s1) {
+#' compute_matrix_given_cov(grid = c(0.1,0.2,0.3,0.4), K = fun)
+compute_matrix_given_cov <- function(grid, K){
+  t <- sort(grid)
+  Cov <- sapply(t, function(s1) {
     sapply(t, function(s2) {
       K(s1, s2)
     })
   })
-  Sigma
+  Cov
 }
+
+
+#' Simulates a Gaussian process with a given covariance function.
+#'
+#' This function simulates a Gaussian process over a fine-grid,
+#'  provided with a given covariance function.
+#'
+#' @param grid A vector of locations to be provided as the grid.
+#' @param K A covariance function of two arguments that is PD. Default being Brownian motion.
+#' @return A dataframe with time index and value of the sample path.
+#' @export
+#' @examples
+#' sim_GP(grid = c(0.1,0.2,0.3), K = function(s, t) {min(s, t)})
+sim_GP <- function(grid, K = function(s, t) {min(s, t)}) {
+  x <- sort(grid)
+  Cov <- compute_matrix_given_cov(grid = x, K = K)
+  sim_path <- MASS::mvrnorm(mu = rep(0, times = length(x)), Sigma = Cov)
+  return(data.frame("x" = x, "f" = sim_path))
+}
+

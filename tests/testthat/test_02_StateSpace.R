@@ -3,7 +3,7 @@ library(sGPfit)
 
 ## Construct precision matrix:
 Q <- joint_prec_construct(t_vec = c(0.1,0.2,0.3), a = 1, sd = 1)
-Exact <- compute_matrix_given_cov(from = 0.1, to = 0.3, m = 3, K = generate_K_true(1,1))
+Exact <- compute_matrix_given_cov(grid = c(0.1,0.2,0.3), K = generate_K_true(1,1))
 
 test_that("Dimensions of created matrices are correct",{
   expect_equal(dim(Q), c(6,6))

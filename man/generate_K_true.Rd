@@ -13,7 +13,7 @@ generate_K_true(sigma, alpha)
 \item{alpha}{The value of the periodicity parameter.}
 }
 \value{
-A PD covariance function that takes two arguments.
+A Positive Definite covariance function that takes two arguments.
 }
 \description{
 This function takes the periodicity parameter and SD parameter to generate a covariance function
