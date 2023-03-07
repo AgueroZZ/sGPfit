@@ -4,9 +4,12 @@
 \alias{sim_GP}
 \title{Simulates a Gaussian process with a given covariance function.}
 \usage{
-sim_GP(grid, K = function(s, t) {
-    min(s, t)
-})
+sim_GP(
+  grid,
+  K = function(s, t) {
+     min(s, t)
+ }
+)
 }
 \arguments{
 \item{grid}{A vector of locations to be provided as the grid.}
