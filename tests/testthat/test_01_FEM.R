@@ -1,12 +1,12 @@
-## Testing for sGP approximation with BT splines:
+## Testing for sGP approximation with sB splines:
 library(sGPfit)
 
 ## Construct precision matrix:
-Q <- Compute_Q_Bt(a = 1, k = 5, region = c(0,10), boundary = TRUE)
-Q2 <- Compute_Q_Bt(a = 1, k = 5, region = c(0,1), boundary = FALSE)
+Q <- Compute_Q_sB(a = 1, k = 5, region = c(0,10), boundary = TRUE)
+Q2 <- Compute_Q_sB(a = 1, k = 5, region = c(0,1), boundary = FALSE)
 ## Construct design matrix:
-B <- Compute_B_Bt(x = c(0.1,0.5,0.8), a = 1, k = 5, region = c(0,1))
-B2 <- Compute_B_Bt(x = c(0.1,0.5,0.8), a = 1, k = 5, region = c(0,1), boundary = FALSE)
+B <- Compute_B_sB(x = c(0.1,0.5,0.8), a = 1, k = 5, region = c(0,1))
+B2 <- Compute_B_sB(x = c(0.1,0.5,0.8), a = 1, k = 5, region = c(0,1), boundary = FALSE)
 
 test_that("Dimensions of created matrices are correct",{
   expect_equal(dim(Q), c(6,6))

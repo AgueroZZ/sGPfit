@@ -25,7 +25,7 @@ The sGP model can be sampled/fitted using three methods:
 
 - Exact Method with State-Space Representation
 
-- Approximation Method with BT splines
+- Approximation Method with sB splines
 
 ## Exact Method
 
@@ -70,10 +70,10 @@ This method is much faster than the direct method, especially when the number of
 
 ## Approximation Method
 
-Finally, instead of the exact method, one can also consider approximated method based on the BT splines:
+Finally, instead of the exact method, one can also consider approximated method based on the sB splines:
 
 ```{r}
-samps <- sampling_from_BT(x = locations, a = 1, k = 20, region = c(0,10), n = 1)
+samps <- sampling_from_sB(x = locations, a = 1, k = 20, region = c(0,10), n = 1)
 plot(samps[,1]~locations, ylab = "f", xlab = "x", type = 'l')
 ```
 

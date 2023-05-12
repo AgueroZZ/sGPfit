@@ -1,10 +1,10 @@
-#' Create the Precision matrix of the BT approximation
+#' Create the Precision matrix of the sB approximation
 #'
-#' This function outputs the precision matrix of the BT approximation as a sparse matrix, given the number of knots,
+#' This function outputs the precision matrix of the sB approximation as a sparse matrix, given the number of knots,
 #' the periodicity parameter a, and the region of interest.
 #'
 #' @param a A positive scalar represents the periodicity parameter.
-#' @param k A positive integer represents the number of knots used to define the BT basis. The number of
+#' @param k A positive integer represents the number of knots used to define the sB basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
 #' @param accuracy A positive integer represents the integration size used to compute the inner product. Smaller value
@@ -15,8 +15,8 @@
 #' @import Matrix
 #' @export
 #' @examples
-#' Compute_Q_Bt(a = 1, k = 5, region = c(0,1))
-Compute_Q_Bt <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
+#' Compute_Q_sB(a = 1, k = 5, region = c(0,1))
+Compute_Q_sB <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
   ss <- function(M) {Matrix::forceSymmetric(M + t(M))}
   x <- seq(min(region),max(region),by = accuracy)
   if(boundary == TRUE){
@@ -128,13 +128,13 @@ Compute_Q_Bt <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
 
 
 
-#' Create the Precision matrix of the BT approximation (without the B spline)
+#' Create the Precision matrix of the sB approximation (without the B spline)
 #'
-#' This function outputs the precision matrix of the BT approximation as a sparse matrix, given the number of knots,
+#' This function outputs the precision matrix of the sB approximation as a sparse matrix, given the number of knots,
 #' the periodicity parameter a, and the region of interest.
 #'
 #' @param a A positive scalar represents the periodicity parameter.
-#' @param k A positive integer represents the number of knots used to define the BT basis. The number of
+#' @param k A positive integer represents the number of knots used to define the sB basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
 #' @param accuracy A positive integer represents the integration size used to compute the inner product. Smaller value
@@ -145,8 +145,8 @@ Compute_Q_Bt <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
 #' @import Matrix
 #' @export
 #' @examples
-#' Compute_Q_Bt_old(a = 1, k = 5, region = c(0,1))
-Compute_Q_Bt_old <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
+#' Compute_Q_sB_old(a = 1, k = 5, region = c(0,1))
+Compute_Q_sB_old <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
   ss <- function(M) {Matrix::forceSymmetric(M + t(M))}
   x <- seq(min(region),max(region),by = accuracy)
   if(boundary == TRUE){
@@ -353,22 +353,22 @@ Compute_Q_B <- function(a,k,region, boundary = TRUE){
 
 
 
-#' Create the Design matrix of the BT approximation
+#' Create the Design matrix of the sB approximation
 #'
-#' This function outputs the design matrix of the BT approximation as a sparse matrix, given the number of knots,
+#' This function outputs the design matrix of the sB approximation as a sparse matrix, given the number of knots,
 #' the periodicity parameter a, and the region of interest.
 #'
 #' @param x A vector of numeric values that denotes the evaluation locations.
 #' @param a A positive scalar represents the periodicity parameter.
-#' @param k A positive integer represents the number of knots used to define the BT basis. The number of
+#' @param k A positive integer represents the number of knots used to define the sB basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
 #' @param boundary A logical value to denote whether to consider the boundary conditions.
 #' @return A sparse matrix as the design matrix of the weights.
 #' @export
 #' @examples
-#' Compute_B_Bt(x = c(1,2,3), a = 1, k = 5, region = c(0,3))
-Compute_B_Bt <- function(x, a, k, region, boundary = TRUE){
+#' Compute_B_sB(x = c(1,2,3), a = 1, k = 5, region = c(0,3))
+Compute_B_sB <- function(x, a, k, region, boundary = TRUE){
   if(boundary){
     B_basis <- suppressWarnings(fda::create.bspline.basis(rangeval = c(min(region),max(region)),
                                                           nbasis = k,
@@ -391,22 +391,22 @@ Compute_B_Bt <- function(x, a, k, region, boundary = TRUE){
 
 
 
-#' Create the Design matrix of the BT approximation (without the B spline)
+#' Create the Design matrix of the sB approximation (without the B spline)
 #'
-#' This function outputs the design matrix of the BT approximation as a sparse matrix, given the number of knots,
+#' This function outputs the design matrix of the sB approximation as a sparse matrix, given the number of knots,
 #' the periodicity parameter a, and the region of interest.
 #'
 #' @param x A vector of numeric values that denotes the evaluation locations.
 #' @param a A positive scalar represents the periodicity parameter.
-#' @param k A positive integer represents the number of knots used to define the BT basis. The number of
+#' @param k A positive integer represents the number of knots used to define the sB basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
 #' @param boundary A logical value to denote whether to consider the boundary conditions.
 #' @return A sparse matrix as the design matrix of the weights.
 #' @export
 #' @examples
-#' Compute_B_Bt_old(x = c(1,2,3), a = 1, k = 5, region = c(0,3))
-Compute_B_Bt_old <- function(x, a, k, region, boundary = TRUE){
+#' Compute_B_sB_old(x = c(1,2,3), a = 1, k = 5, region = c(0,3))
+Compute_B_sB_old <- function(x, a, k, region, boundary = TRUE){
   if(boundary){
     B_basis <- suppressWarnings(fda::create.bspline.basis(rangeval = c(min(region),max(region)),
                                                      nbasis = k,
@@ -464,13 +464,13 @@ Compute_B_B <- function(x, a, k, region, boundary = TRUE){
 
 
 
-#' Sample from the approximate prior using BT splines
+#' Sample from the approximate prior using sB splines
 #'
-#' This function samples sample paths from the approximate prior using BT splines.
+#' This function samples sample paths from the approximate prior using sB splines.
 #'
 #' @param x A vector that specifies where to evaluate the sample path.
 #' @param a A positive scalar represents the periodicity parameter.
-#' @param k A positive integer represents the number of knots used to define the BT basis. The number of
+#' @param k A positive integer represents the number of knots used to define the sB basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
 #' @param boundary A logical value to denote whether to consider the boundary conditions.
@@ -478,10 +478,10 @@ Compute_B_B <- function(x, a, k, region, boundary = TRUE){
 #' @return A matrix with each column denote a sample path f(x).
 #' @export
 #' @examples
-#' sampling_from_BT(x = c(1,2,3), a = 1, k = 5, region = c(0,5))
-sampling_from_BT <- function(x, a, k, region, boundary = TRUE, n = 1){
-  Prec <- Compute_Q_Bt(a, k, region, boundary = boundary)
-  B <- Compute_B_Bt(x, a, k, region, boundary = boundary)
+#' sampling_from_sB(x = c(1,2,3), a = 1, k = 5, region = c(0,5))
+sampling_from_sB <- function(x, a, k, region, boundary = TRUE, n = 1){
+  Prec <- Compute_Q_sB(a, k, region, boundary = boundary)
+  B <- Compute_B_sB(x, a, k, region, boundary = boundary)
   if(boundary){
     coefs_samps <- LaplacesDemon::rmvnp(n = n, mu = rep(0,(2*(k-2))), Omega = as.matrix(Prec))
   }
