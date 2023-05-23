@@ -1,11 +1,11 @@
 #' Construct the joint precision matrix of the sGP process and its derivative.
 #'
 #' This function constructs the joint precision matrix of the sGP process and its
-#' derivative (second entry) given the sGP's periodicity and standard deviation,
+#' derivative (second entry) given the sGP's frequency and standard deviation,
 #' at a given set of locations.
 #'
 #' @param t_vec A positive numeric vector denotes the locations to evaluate the GP.
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param sd A positive scalar represents the standard deviation parameter.
 #' @return A sparse precision matrix for the sGP (and derivative) at the locations.
 #' @importFrom methods as
@@ -90,7 +90,7 @@ joint_prec_construct <- function(t_vec, a, sd){
 #' @param t A vector of locations to evaluate the sGP and its derivative, by default being NULL.
 #' @param mesh_size A scalar denotes the size of each mesh to create, if t is NULL
 #' @param max_t A scalar denotes the maximum of location to consider if t is NULL.
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param sd A positive scalar represents the standard deviation parameter.
 #' @return A dataframe that contains the sampled sGP and its derivative at the vector t.
 #' @export

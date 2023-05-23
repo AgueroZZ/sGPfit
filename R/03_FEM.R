@@ -1,9 +1,9 @@
 #' Create the Precision matrix of the sB approximation
 #'
 #' This function outputs the precision matrix of the sB approximation as a sparse matrix, given the number of knots,
-#' the periodicity parameter a, and the region of interest.
+#' the frequency parameter a, and the region of interest.
 #'
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param k A positive integer represents the number of knots used to define the sB basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
@@ -131,9 +131,9 @@ Compute_Q_sB <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
 #' Create the Precision matrix of the sB approximation (without the B spline)
 #'
 #' This function outputs the precision matrix of the sB approximation as a sparse matrix, given the number of knots,
-#' the periodicity parameter a, and the region of interest.
+#' the frequency parameter a, and the region of interest.
 #'
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param k A positive integer represents the number of knots used to define the sB basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
@@ -226,9 +226,9 @@ Compute_Q_sB_old <- function(a,k,region, accuracy = 0.01, boundary = TRUE){
 #' Create the Precision matrix of the B spline approximation, using Richardson Method
 #'
 #' This function outputs the precision matrix of the B spline approximation as a sparse matrix, given the number of knots,
-#' the periodicity parameter a, and the region of interest.
+#' the frequency parameter a, and the region of interest.
 #'
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param k A positive integer represents the number of knots used to define the B spline basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
@@ -267,9 +267,9 @@ Compute_Q_BR <- function(a,k,region, boundary = TRUE){
 #' Create the Precision matrix of the B spline approximation with grid approximation
 #'
 #' This function outputs the precision matrix of the B spline approximation as a sparse matrix, given the number of knots,
-#' the periodicity parameter a, and the region of interest.
+#' the frequency parameter a, and the region of interest.
 #'
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param k A positive integer represents the number of knots used to define the B spline basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
@@ -318,9 +318,9 @@ Compute_Q_B_grid <- function(a,k,region, boundary = TRUE, accuracy = 0.01){
 #' Create the Precision matrix of the B spline approximation
 #'
 #' This function outputs the precision matrix of the B spline approximation as a sparse matrix, given the number of knots,
-#' the periodicity parameter a, and the region of interest.
+#' the frequency parameter a, and the region of interest.
 #'
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param k A positive integer represents the number of knots used to define the B spline basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
@@ -356,10 +356,10 @@ Compute_Q_B <- function(a,k,region, boundary = TRUE){
 #' Create the Design matrix of the sB approximation
 #'
 #' This function outputs the design matrix of the sB approximation as a sparse matrix, given the number of knots,
-#' the periodicity parameter a, and the region of interest.
+#' the frequency parameter a, and the region of interest.
 #'
 #' @param x A vector of numeric values that denotes the evaluation locations.
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param k A positive integer represents the number of knots used to define the sB basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
@@ -394,10 +394,10 @@ Compute_B_sB <- function(x, a, k, region, boundary = TRUE){
 #' Create the Design matrix of the sB approximation (without the B spline)
 #'
 #' This function outputs the design matrix of the sB approximation as a sparse matrix, given the number of knots,
-#' the periodicity parameter a, and the region of interest.
+#' the frequency parameter a, and the region of interest.
 #'
 #' @param x A vector of numeric values that denotes the evaluation locations.
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param k A positive integer represents the number of knots used to define the sB basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
@@ -432,10 +432,10 @@ Compute_B_sB_old <- function(x, a, k, region, boundary = TRUE){
 #' Create the Design matrix of the B spline approximation
 #'
 #' This function outputs the design matrix of the B spline approximation as a sparse matrix, given the number of knots,
-#' the periodicity parameter a, and the region of interest.
+#' the frequency parameter a, and the region of interest.
 #'
 #' @param x A vector of numeric values that denotes the evaluation locations.
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param k A positive integer represents the number of knots used to define the B spline basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
@@ -469,7 +469,7 @@ Compute_B_B <- function(x, a, k, region, boundary = TRUE){
 #' This function samples sample paths from the approximate prior using sB splines.
 #'
 #' @param x A vector that specifies where to evaluate the sample path.
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param k A positive integer represents the number of knots used to define the sB basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
@@ -499,7 +499,7 @@ sampling_from_sB <- function(x, a, k, region, boundary = TRUE, n = 1){
 #' This function samples sample paths from the approximate prior using B splines.
 #'
 #' @param x A vector that specifies where to evaluate the sample path.
-#' @param a A positive scalar represents the periodicity parameter.
+#' @param a A positive scalar represents the frequency parameter.
 #' @param k A positive integer represents the number of knots used to define the B basis. The number of
 #' basis functions equals to 2 times k or 2 times (k-1) if boundary is TRUE.
 #' @param region A vector of size 2 that denotes the upper and lower interval limit of the region of interest.
