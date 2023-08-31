@@ -23,16 +23,14 @@ Based on a visual examination of the dataset, we can observe an obvious
 amplitudes over time. Therefore, we will consider fitting the following
 model:
 
-\begin{equation}
+$$
     \begin{aligned}
         y_i|\lambda_i &\sim \text{Poisson}(\lambda_i) ,\\
         \log(\lambda_i) &= \eta_i = \beta_0 + g(x_i) + \xi_i,\\
         g &\sim \text{sGP} \bigg(a = \frac{2\pi}{10}, \sigma\bigg),\\
         \xi_i &\sim N(0,\sigma_\xi).
     \end{aligned}
-\end{equation}
-
-Here, each $y_i$ represents the lynx count, $x_i$ represents the
+$$ Here, each $y_i$ represents the lynx count, $x_i$ represents the
 number of years since 1821, and $\xi_i$ is an observation-level random
 intercept to account for overdispersion effect.
 
