@@ -32,7 +32,8 @@ $$
         \xi_i &\sim N(0,\sigma_\xi).
     \end{aligned}
 \end{equation}
-$$ Here, each $y_i$ represents the lynx count, $x_i$ represents the
+$$ 
+Here, each $y_i$ represents the lynx count, $x_i$ represents the
 number of years since 1821, and $\xi_i$ is an observation-level random
 intercept to account for overdispersion effect.
 
