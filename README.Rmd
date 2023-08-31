@@ -1,12 +1,8 @@
 ---
-title: "Unlocking the Power of sGP: A Step-by-Step R Tutorial"
-output: html_document
-date: "2023-05-13"
+output: github_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ## Introduction:
 
@@ -276,5 +272,3 @@ prec_marg <- fitted_mod_sB$marginals[[2]]
 logpostsigma <- compute_pdf_and_cdf(prec_marg,list(totheta = function(x) -2*log(x),fromtheta = function(x) exp(-x/2)),interpolation = 'spline')
 plot(pdf_transparam ~ transparam, data = logpostsigma, type = 'l', xlab = "Overdispersion", ylab = "Post")
 ```
-
-
