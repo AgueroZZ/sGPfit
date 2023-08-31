@@ -114,10 +114,8 @@ two possible approaches:
   spaced. For large datasets with irregularly spaced locations, the
   second approach using the seasonal B-spline (sB-spline) approximation
   is more computationally efficient.
--  The sGP is approximated as
-  $\tilde{g}_k(x) = \sum_{i=1}^k w_i \varphi_i(x)$, where
-  ${\varphi_i, i \in [k]}$ is a set of sB-spline basis functions, and
-  $\boldsymbol{w} = \{w_i, i \in [k]\}$ is a set of Gaussian weights.
+-  The sGP is approximated as $\tilde{g}_k(x)$ using a set of sB-spline
+  basis functions, with a set of Gaussian weights.
 
 ### Inference with the State-Space approach:
 
@@ -176,9 +174,8 @@ fitted_mod <- aghq::marginal_laplace_tmb(ff,5,c(0,0))
 ### Inference with the seasonal-B spline approach:
 
 To use the sB-spline approach, the sGP is approximated as
-$\tilde{g}_k(x) = \sum_{i=1}^k w_i \varphi_i(x)$, where
-$\{\varphi_i, i \in [k]\}$ is a set of sB-spline basis functions, and
-$\boldsymbol{w} = \{w_i, i \in [k]\}$ is a set of Gaussian weights.
+$\tilde{g}_k(x)$ using a set of sB-spline basis functions with a set of
+Gaussian weights.
 
 In this case, the design matrix $B$ will be defined with element
 $B_{ij} = \varphi_j(x_i)$, which can be constructed using the
@@ -241,17 +238,6 @@ state-space representation:
 ``` r
 ## Posterior samples:
 samps1 <- sample_marginal(fitted_mod, M = 3000)
-```
-
-    ## Warning: 'Matrix::..2dge' is deprecated.
-    ## Use '.dense2g' instead.
-    ## See help("Deprecated") and help("Matrix-deprecated").
-
-    ## Warning: 'Matrix::..2dge' is deprecated.
-    ## Use '.dense2g' instead.
-    ## See help("Deprecated") and help("Matrix-deprecated").
-
-``` r
 g_samps <- B %*% samps1$samps[1:ncol(B),] + X %*% samps1$samps[(ncol(B) + 1):(ncol(B) + ncol(X)),]
 ```
 
@@ -279,13 +265,6 @@ lines(lower ~ data$x, type = "l", col = "red", lty = "dashed")
 ## Posterior of the SD parameter:
 prec_marg <- fitted_mod$marginals[[1]]
 logpostsigma <- compute_pdf_and_cdf(prec_marg,list(totheta = function(x) -2*log(x),fromtheta = function(x) exp(-x/2)),interpolation = 'spline')
-```
-
-    ## Warning: 'Matrix::..2dge' is deprecated.
-    ## Use '.dense2g' instead.
-    ## See help("Deprecated") and help("Matrix-deprecated").
-
-``` r
 plot(pdf_transparam ~ transparam, data = logpostsigma, type = 'l', xlab = "SD", ylab = "Post")
 ```
 
@@ -295,13 +274,6 @@ plot(pdf_transparam ~ transparam, data = logpostsigma, type = 'l', xlab = "SD", 
 ## Posterior of the Overdispersion parameter:
 prec_marg <- fitted_mod$marginals[[2]]
 logpostsigma <- compute_pdf_and_cdf(prec_marg,list(totheta = function(x) -2*log(x),fromtheta = function(x) exp(-x/2)),interpolation = 'spline')
-```
-
-    ## Warning: 'Matrix::..2dge' is deprecated.
-    ## Use '.dense2g' instead.
-    ## See help("Deprecated") and help("Matrix-deprecated").
-
-``` r
 plot(pdf_transparam ~ transparam, data = logpostsigma, type = 'l', xlab = "Overdispersion", ylab = "Post")
 ```
 
@@ -313,17 +285,6 @@ B-spline approach:
 ``` r
 ## Posterior samples:
 samps2 <- sample_marginal(fitted_mod_sB, M = 3000)
-```
-
-    ## Warning: 'Matrix::..2dge' is deprecated.
-    ## Use '.dense2g' instead.
-    ## See help("Deprecated") and help("Matrix-deprecated").
-
-    ## Warning: 'Matrix::..2dge' is deprecated.
-    ## Use '.dense2g' instead.
-    ## See help("Deprecated") and help("Matrix-deprecated").
-
-``` r
 g_samps_2 <- B2 %*% samps2$samps[1:ncol(B2),] + X %*% samps2$samps[(ncol(B2) + 1):(ncol(B2) + ncol(X)),]
 ```
 
@@ -351,13 +312,6 @@ lines(lower2 ~ data$x, type = "l", col = "red", lty = "dashed")
 ## Posterior of the SD parameter:
 prec_marg <- fitted_mod_sB$marginals[[1]]
 logpostsigma <- compute_pdf_and_cdf(prec_marg,list(totheta = function(x) -2*log(x),fromtheta = function(x) exp(-x/2)),interpolation = 'spline')
-```
-
-    ## Warning: 'Matrix::..2dge' is deprecated.
-    ## Use '.dense2g' instead.
-    ## See help("Deprecated") and help("Matrix-deprecated").
-
-``` r
 plot(pdf_transparam ~ transparam, data = logpostsigma, type = 'l', xlab = "SD", ylab = "Post")
 ```
 
@@ -367,13 +321,6 @@ plot(pdf_transparam ~ transparam, data = logpostsigma, type = 'l', xlab = "SD", 
 ## Posterior of the Overdispersion parameter:
 prec_marg <- fitted_mod_sB$marginals[[2]]
 logpostsigma <- compute_pdf_and_cdf(prec_marg,list(totheta = function(x) -2*log(x),fromtheta = function(x) exp(-x/2)),interpolation = 'spline')
-```
-
-    ## Warning: 'Matrix::..2dge' is deprecated.
-    ## Use '.dense2g' instead.
-    ## See help("Deprecated") and help("Matrix-deprecated").
-
-``` r
 plot(pdf_transparam ~ transparam, data = logpostsigma, type = 'l', xlab = "Overdispersion", ylab = "Post")
 ```
 

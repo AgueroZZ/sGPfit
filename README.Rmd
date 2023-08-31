@@ -86,13 +86,13 @@ X <- as(cbind(cos(a*x),sin(a*x),1), "dgTMatrix")
 To perform inference for the unknown function $g$ using the sGP, we have two possible approaches:
 
 - \textbf{Exact approach through the state-space representation:} This approach is most efficient when the locations `x` are equally spaced. For large datasets with irregularly spaced locations, the second approach using the seasonal B-spline (sB-spline) approximation is more computationally efficient.
-- \textbf{Approximate approach through the seasonal B-spline (sB-spline) approximation:} The sGP is approximated as $\tilde{g}_k(x) = \sum_{i=1}^k w_i \varphi_i(x)$, where ${\varphi_i, i \in [k]}$ is a set of sB-spline basis functions, and $\boldsymbol{w} = \{w_i, i \in [k]\}$ is a set of Gaussian weights.
+- \textbf{Approximate approach through the seasonal B-spline (sB-spline) approximation:} The sGP is approximated as $\tilde{g}_k(x)$ using a set of sB-spline basis functions, with a set of Gaussian weights.
 
 ### Inference with the State-Space approach:
 
 To use the state-space representation, we need to create two additional matrices: $B$ and $Q$. The matrix $B$ is the design matrix of each value of $[g(x_i),g'(x_i)]$, which will be (mostly) a diagonal matrix in this case. The matrix $Q$ is the precision matrix of $[g(x),g'(x)]$, which can be constructed using the `joint_prec_construct` function.
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 n = length(x)
 B <- Matrix::Diagonal(n = 2*n)[,1:(2*n)]
 B <- B[seq(1,2*n,by = 2),][, -c(1:2)]
@@ -142,11 +142,11 @@ fitted_mod <- aghq::marginal_laplace_tmb(ff,5,c(0,0))
 
 ### Inference with the seasonal-B spline approach:
 
-To use the sB-spline approach, the sGP is approximated as $\tilde{g}_k(x) = \sum_{i=1}^k w_i \varphi_i(x)$, where $\{\varphi_i, i \in [k]\}$ is a set of sB-spline basis functions, and $\boldsymbol{w} = \{w_i, i \in [k]\}$ is a set of Gaussian weights.
+To use the sB-spline approach, the sGP is approximated as $\tilde{g}_k(x)$ using a set of sB-spline basis functions with a set of Gaussian weights.
 
 In this case, the design matrix $B$ will be defined with element $B_{ij} = \varphi_j(x_i)$, which can be constructed using the `Compute_B_sB` function. The matrix $Q$ will be the precision matrix of the Gaussian weights $\boldsymbol{w}$, which can be constructed using the `Compute_Q_sB` function. As an example, let's consider $k = 30$ sB-spline basis functions constructed with equal spacing:
 
-```{r}
+```{r warning=FALSE, message=FALSE}
 B2 <- Compute_B_sB(x = data$x, a = a, region = range(data$x), k = 30)
 B2 <- as(B2,"dgTMatrix")
 Q2 <- Compute_Q_sB(a = a, k = 30, region = range(data$x))
@@ -155,7 +155,7 @@ Q2 <- as(as(Q2, "matrix"),"dgTMatrix")
 
 Once these matrices are constructed, the inference can be carried out in a similar manner as before:
 
-```{r message=FALSE, result = "hide"}
+```{r warning=FALSE, message=FALSE, result = "hide"}
 tmbdat <- list(
     # Design matrix
     B = B2,
@@ -196,13 +196,13 @@ fitted_mod_sB <- aghq::marginal_laplace_tmb(ff,5,c(0,0))
 
 First, let's obtain the posterior samples and summary using the state-space representation:
 
-```{r}
+```{r warning=FALSE}
 ## Posterior samples:
 samps1 <- sample_marginal(fitted_mod, M = 3000)
 g_samps <- B %*% samps1$samps[1:ncol(B),] + X %*% samps1$samps[(ncol(B) + 1):(ncol(B) + ncol(X)),]
 ```
 
-```{r}
+```{r warning=FALSE}
 ## Posterior summary:
 mean <- apply(as.matrix(g_samps), MARGIN = 1, mean)
 upper <- apply(as.matrix(g_samps), MARGIN = 1, quantile, p = 0.975)
@@ -211,7 +211,7 @@ lower <- apply(as.matrix(g_samps), MARGIN = 1, quantile, p = 0.025)
 
 Next, let's plot the posterior results obtained from the state-space representation:
 
-```{r}
+```{r warning=FALSE}
 ## Plotting
 plot(log(data$y) ~ data$x, xlab = "time", ylab = "Posterior of g(x)", ylim = c(3.1,9))
 lines(upper ~ data$x, type = "l", col = "red", lty = "dashed")
@@ -219,14 +219,14 @@ lines(mean ~ data$x, type = "l", col = "blue")
 lines(lower ~ data$x, type = "l", col = "red", lty = "dashed")
 ```
 
-```{r}
+```{r warning=FALSE}
 ## Posterior of the SD parameter:
 prec_marg <- fitted_mod$marginals[[1]]
 logpostsigma <- compute_pdf_and_cdf(prec_marg,list(totheta = function(x) -2*log(x),fromtheta = function(x) exp(-x/2)),interpolation = 'spline')
 plot(pdf_transparam ~ transparam, data = logpostsigma, type = 'l', xlab = "SD", ylab = "Post")
 ```
 
-```{r}
+```{r warning=FALSE}
 ## Posterior of the Overdispersion parameter:
 prec_marg <- fitted_mod$marginals[[2]]
 logpostsigma <- compute_pdf_and_cdf(prec_marg,list(totheta = function(x) -2*log(x),fromtheta = function(x) exp(-x/2)),interpolation = 'spline')
@@ -235,13 +235,13 @@ plot(pdf_transparam ~ transparam, data = logpostsigma, type = 'l', xlab = "Overd
 
 Now, let's obtain the posterior samples and summary using the seasonal B-spline approach:
 
-```{r}
+```{r warning=FALSE}
 ## Posterior samples:
 samps2 <- sample_marginal(fitted_mod_sB, M = 3000)
 g_samps_2 <- B2 %*% samps2$samps[1:ncol(B2),] + X %*% samps2$samps[(ncol(B2) + 1):(ncol(B2) + ncol(X)),]
 ```
 
-```{r}
+```{r warning=FALSE}
 ## Posterior summary:
 mean2 <- apply(as.matrix(g_samps_2), MARGIN = 1, mean)
 upper2 <- apply(as.matrix(g_samps_2), MARGIN = 1, quantile, p = 0.975)
@@ -250,7 +250,7 @@ lower2 <- apply(as.matrix(g_samps_2), MARGIN = 1, quantile, p = 0.025)
 
 Finally, let's plot the posterior results obtained from the seasonal B-spline approach:
 
-```{r}
+```{r warning=FALSE}
 ## Plotting
 plot(log(data$y) ~ data$x, xlab = "time", ylab = "Posterior of g(x)", ylim = c(3.1,9))
 lines(upper2 ~ data$x, type = "l", col = "red", lty = "dashed")
@@ -258,14 +258,14 @@ lines(mean2 ~ data$x, type = "l", col = "blue")
 lines(lower2 ~ data$x, type = "l", col = "red", lty = "dashed")
 ```
 
-```{r}
+```{r warning=FALSE}
 ## Posterior of the SD parameter:
 prec_marg <- fitted_mod_sB$marginals[[1]]
 logpostsigma <- compute_pdf_and_cdf(prec_marg,list(totheta = function(x) -2*log(x),fromtheta = function(x) exp(-x/2)),interpolation = 'spline')
 plot(pdf_transparam ~ transparam, data = logpostsigma, type = 'l', xlab = "SD", ylab = "Post")
 ```
 
-```{r}
+```{r warning=FALSE}
 ## Posterior of the Overdispersion parameter:
 prec_marg <- fitted_mod_sB$marginals[[2]]
 logpostsigma <- compute_pdf_and_cdf(prec_marg,list(totheta = function(x) -2*log(x),fromtheta = function(x) exp(-x/2)),interpolation = 'spline')
