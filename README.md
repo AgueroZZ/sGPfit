@@ -23,12 +23,15 @@ Based on a visual examination of the dataset, we can observe an obvious
 amplitudes over time. Therefore, we will consider fitting the following
 model:
 
-$$\begin{aligned}
+$$
+\begin{aligned}
         y_i|\lambda_i &\sim \text{Poisson}(\lambda_i) ,\\
         \log(\lambda_i) &= \eta_i = \beta_0 + g(x_i) + \xi_i,\\
         g &\sim \text{sGP} \bigg(a = \frac{2\pi}{10}, \sigma\bigg),\\
         \xi_i &\sim N(0,\sigma_\xi).
-\end{aligned}$$ 
+\end{aligned}
+$$
+
 Here, each $y_i$ represents the lynx count, $x_i$ represents the
 number of years since 1821, and $\xi_i$ is an observation-level random
 intercept to account for overdispersion effect.
@@ -112,7 +115,7 @@ two possible approaches:
   second approach using the seasonal B-spline (sB-spline) approximation
   is more computationally efficient.
 -  The sGP is approximated as
-  $\tilde{g}k(x) = \sum{i=1}^k w_i \varphi_i(x)$, where
+  $\tilde{g}_k(x) = \sum{i=1}^k w_i \varphi_i(x)$, where
   ${\varphi_i, i \in [k]}$ is a set of sB-spline basis functions, and
   $\boldsymbol{w} = {w_i, i \in [k]}$ is a set of Gaussian weights.
 
@@ -172,10 +175,7 @@ fitted_mod <- aghq::marginal_laplace_tmb(ff,5,c(0,0))
 
 ### Inference with the seasonal-B spline approach:
 
-To use the sB-spline approach, the sGP is approximated as
-$\tilde{g}_k(x) = \sum_{i=1}^k w_i \varphi_i(x)$, where
-$\{\varphi_i, i \in [k]\}$ is a set of sB-spline basis functions, and
-$\boldsymbol{w} = \{w_i, i \in [k]\}$ is a set of Gaussian weights.
+To use the sB-spline approach, the sGP is approximated as $\tilde{g}_k(x) = \sum_{i=1}^k w_i \varphi_i(x)$, where $\{\varphi_i, i \in [k]\}$ is a set of sB-spline basis functions, and $\boldsymbol{w} = \{w_i, i \in [k]\}$ is a set of Gaussian weights.
 
 In this case, the design matrix $B$ will be defined with element
 $B_{ij} = \varphi_j(x_i)$, which can be constructed using the
