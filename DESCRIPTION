@@ -4,7 +4,10 @@ Version: 1.0.1
 Author: Ziang Zhang
 Maintainer: Ziang Zhang <aguero.zhang@mail.utoronto.ca>
 Description: To implement the seasonal Gaussian process model through either its state-space representation or its finite dimensional approximation.
+LinkingTo: TMB, RcppEigen
 Imports:
+    TMB, 
+    RcppEigen,
     methods,
     tsDyn,
     fda,
